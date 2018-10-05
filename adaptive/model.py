@@ -182,7 +182,9 @@ class AdaptiveVoter(object):
 		changed = False
 		
 		# Cannot build past what is simulated, need to run new iterations.
-		if t > self.t or t=='max':
+		if t == 'max':
+			t = self.t
+		if t > self.t:
 			t = self.t
 
 		# Forwards building.
