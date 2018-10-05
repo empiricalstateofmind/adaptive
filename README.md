@@ -21,4 +21,4 @@ to clone the package into your working directory.
 
 #### Tutorial
 
-A tutorial for the package can be found [here].(https://github.com/empiricalstateofmind/adaptive/blob/master/examples/tutorial.ipynb)
+A tutorial for the package can be found [here](https://github.com/empiricalstateofmind/adaptive/blob/master/examples/tutorial.ipynb).
