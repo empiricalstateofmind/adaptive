@@ -1,7 +1,7 @@
 *.pyc
 *.ipynb_checkpoints/
 .dropbox.attr
-*.json
+*.json*
 *.egg-info
 *.code-workspace
 *.cache
