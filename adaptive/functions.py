@@ -3,31 +3,31 @@ from inspect import isfunction
 import numpy as np
 
 def degree(simulation):
-    """ Returns degree distribution of a simulation"""
+    """ Returns degree distribution of a simulation. """
     return simulation.A.sum(axis=1)
 
 def mean_degree(simulation):
-    """"""
+    """ Returns the mean degree of a simulation. """
     return degree(simulation).mean()
 
 def opinion(simulation):
-    """"""
+    """ Returns the opinion vector of a simulation. """
     return simulation.S 
 
 def mean_opinion(simulation):
-    """"""
+    """ Returns the mean opinion of a simulation."""
     return opinion(simulation).mean()
 
 def excess_opinion(simulation):
-    """"""
+    """ Returns the excess opinion vector of a simulation. """
     return -simulation.S * (simulation.A @ simulation.S)
 
 def mean_excess_opinion(simulation):
-    """"""
+    """ Returns the mean excess opinion vector of a simulation. """
     return excess_opinion(simulation).mean()
 
 def active_links(simulation):
-    """"""
+    """ Returns the number of active links (number of links spanning opposite opinions) of a simulation. """
 
     alinks = ((simulation.S[:,np.newaxis] * simulation.A * simulation.S[:,np.newaxis].T)==-1).sum()
     total_edges = simulation.A.sum() #double check both these for double counting!
@@ -46,6 +46,7 @@ def process_timeseries(simulation, time_range, functions):
         functions (function or list):
 
     Returns:
+        store (dict): A dictionary of time series for each function.
     """
 
     store = defaultdict(dict)

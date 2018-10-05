@@ -9,7 +9,7 @@ from .errors import *
 
 class AdaptiveVoter(object):
 	"""
-	Simulation class for the adaptive voter model. 
+	Simulation class for the Adaptive Voter Model. 
 	"""
 	
 	__version__ = 0.1
@@ -17,14 +17,16 @@ class AdaptiveVoter(object):
 
 	def __init__(self, prebuilt=False, **kwargs):		
 		""" 
-		kap - Node preferred degree
-		r - Probability of node update (versus edge update)
-		h - Homophily
-		f - Neighbourhood agreement threshold
-		T - Temperature
-
 		Input:
+			kap (int/float): Node preferred degree. Take values in [0,infty)
+			r (float): Probability of node update versus edge update. Takes values in [0,1].
+			h (float): Homophily. Takes values in [-1,1].
+			f (float): Neighbourhood agreement threshold. Takes values in [0,1].
+			T (float): Temperature of the system. Takes values in [0,infty)
+		
+		To load a previously saved simulation use AdaptiveVoter.from_saved_simulation(filepath).
 		"""
+
 		if prebuilt:
 			self.init_from_file(**kwargs)
 		else:
@@ -54,7 +56,7 @@ class AdaptiveVoter(object):
 
 	def init_from_file(self, **kwargs):
 		"""
-		Set up the simulation from a prebuilt simulation.
+		Set up the simulation using a prebuilt simulation.
 		"""
 
 		filepath = kwargs.get('filepath', None)
@@ -80,6 +82,7 @@ class AdaptiveVoter(object):
 
 	def set_initial_network(self, G):
 		"""
+		Set the network for the simulation to run on.
 
 		Input:
 			G (nx.Graph or np.ndarray):
@@ -100,6 +103,9 @@ class AdaptiveVoter(object):
 
 	def set_inital_condition(self, S=None):
 		"""
+		Set the inital condition of node states.
+		Node states should be either -1 or +1.
+		This method must be called AFTER set_initial_network.
 
 		Input: 
 			S (np.array):
@@ -123,6 +129,7 @@ class AdaptiveVoter(object):
 		"""
 		Saves the inital state of the simulation as a sequence of events.
 		"""
+
 		for a,b in zip(*self.A.nonzero()):
 				if a < b:
 					self.events.append({'type':'edge',
@@ -156,7 +163,9 @@ class AdaptiveVoter(object):
 
 	@classmethod
 	def from_saved_simulation(cls, filepath):
-		"""Load a previously run instance of the simulation."""
+		"""
+		Load a previously run instance of the simulation.
+		"""
 
 		return cls(prebuilt=True, filepath=filepath)
 
@@ -169,7 +178,6 @@ class AdaptiveVoter(object):
 		Returns:
 			None
 		"""
-		# Need to double check the indexing on starting_index (forwards and backwards)
 
 		changed = False
 		
@@ -282,9 +290,21 @@ class AdaptiveVoter(object):
 		self.X = - self.S * (self.A @ self.S)
 		self._idx = len(self.events)
 
+	def run(self, iterations):
+		"""
+		Run the simulation for a set number of iterations.
+	
+		Input: 
+			iterations (int): The number of iterations to run.
+		Returns:
+			None
+		"""
+		for _ in range(iterations):
+			self.run_iteration()
 
 	def save_to_file(self, filename, compressed=False):
 		"""
+		Save the simulation history and parameters to file (currently JSON format).
 
 		Input:
 			filename (str):
@@ -309,13 +329,18 @@ class AdaptiveVoter(object):
 				f.write(payload)
 
 	def to_graph(self):
-		""""""
+		"""
+		Create a NetworkX graph of the current simulation state.
+		Node opinions are saved as 'opinion' in the node dictionary.
+		"""
 
 		G = nx.from_numpy_array(self.A)
 		nx.set_node_attributes(G, {key:val for key,val in enumerate(self.S)}, 'opinion')
 		return G
 
 class JSONEncoder(json.JSONEncoder):
+	"""Encoder to assist with converting types for safe saving."""
+
 	def default(self, obj):
 		if isinstance(obj, np.int64):
 			return int(obj)
