@@ -133,10 +133,26 @@ class AdaptiveVoter(object):
 										'body':(ix,0)})
 
 	@classmethod
-	def with_erdos_renyi_network(cls):
-		"""Construct using an Erdos Renyi network."""
+	def with_erdos_renyi_network(cls, N, p, random_initial=False, **kwargs):
+		"""
+		Construct using an Erdos Renyi network.
 
-		NotImplementedError("")
+		Input:
+			N (int):
+			p (float):
+			random_initial (bool):
+			**kwargs: Parameter values for specifying the simulation.
+		"""
+
+		G = nx.fast_gnp_random_graph(N=N, p=p)
+
+		adaptive = cls(**kwargs)
+		adaptive.set_initial_network(G)
+
+		if random_initial:
+			adaptive.set_inital_condition()
+
+		return adaptive
 
 	@classmethod
 	def from_saved_simulation(cls, filepath):
