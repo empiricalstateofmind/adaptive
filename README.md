@@ -7,7 +7,7 @@ A basic package to run the adaptive voter model.
 To install directly from Github
 
 ```bash
-pip install git+https://github.com/empiricalstateofmind/eventgraphs
+pip install git+https://github.com/empiricalstateofmind/adaptive
 ```
 
 Alternative use
